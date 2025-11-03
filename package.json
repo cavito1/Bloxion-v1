@@ -3,11 +3,10 @@
   "version": "2.1.2beta3",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npx prisma generate && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prisma:generate": "prisma generate"
+    "lint": "next lint"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
