@@ -50,7 +50,7 @@ const Login: NextPage = () => {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const colors = ["#ff0099", "#b900ff", "#005cff", "#00d8ff"];
+    const colors = ["#ff0099", "#b900ff"];
     let angle = 0;
     const animate = () => {
       const { innerWidth: w, innerHeight: h } = window;
