@@ -71,3 +71,87 @@ ul[data-type="taskList"] {
   color: transparent;
   font-weight: 700;
 }
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: system-ui, sans-serif;
+  background: #18181b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Frosted glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px) saturate(140%);
+  -webkit-backdrop-filter: blur(15px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  padding: 2rem 2.5rem 2.4rem;
+  width: 90%;
+  max-width: 420px;
+  animation: fadeUp 0.6s ease forwards;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 404 text */
+.code {
+  font-size: 5rem;
+  font-weight: 700;
+  color: #ff0099;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 0 30px rgba(255, 0, 153, 0.5);
+  animation: popIn 0.6s ease forwards;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Paragraphs and headings */
+h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #e4e4e7;
+  margin-bottom: 0.6rem;
+}
+
+p {
+  max-width: 400px;
+  color: #a1a1aa;
+  margin: 0 auto 1.4rem;
+  line-height: 1.5;
+}
+
+/* Button styling */
+.return-btn {
+  background: #ff0099;
+  border: none;
+  color: #fff;
+  padding: 0.8rem 1.8rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 0 25px rgba(255, 0, 153, 0.25);
+  transition: all 0.25s ease;
+}
+
+.return-btn:hover {
+  box-shadow: 0 0 35px rgba(255, 0, 153, 0.4);
+  transform: scale(1.05);
+}
+
+.return-btn:active {
+  transform: scale(0.97);
+}
+
