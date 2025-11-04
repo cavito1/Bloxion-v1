@@ -64,3 +64,10 @@ ul[data-type="taskList"] {
 	  }
 	}
   }
+.gradient-text {
+  background: linear-gradient(90deg, #ff0099, #b900ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
