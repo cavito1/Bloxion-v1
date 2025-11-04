@@ -1,20 +1,24 @@
 "use client";
 
-import { useEffect } from "react";
-import Router from "next/router";
 import { motion } from "framer-motion";
+import Router from "next/router";
+import { useEffect } from "react";
 
 export default function NotFoundPage() {
+  useEffect(() => {
+    document.title = "404 • Orbit";
+  }, []);
+
   return (
-    <div className="flex h-screen flex-col items-center justify-center bg-zinc-900 text-center px-4">
+    <div className="flex h-screen items-center justify-center bg-zinc-900 text-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-6"
+        className="glass-card space-y-6"
       >
         <motion.h1
-          className="text-6xl font-bold text-[#ff0099] mb-4 drop-shadow-[0_0_20px_rgba(255,0,153,0.3)]"
+          className="code"
           initial={{ scale: 0.5 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -22,7 +26,7 @@ export default function NotFoundPage() {
           404
         </motion.h1>
 
-        <h2 className="text-3xl font-semibold text-zinc-300 mb-4">
+        <h2 className="text-3xl font-semibold text-zinc-200 mb-2">
           Page Not Found
         </h2>
 
@@ -34,7 +38,7 @@ export default function NotFoundPage() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => Router.push("/")}
-          className="mt-8 px-6 py-3 rounded-xl bg-[#ff0099] text-white font-medium shadow-[0_0_30px_#ff009933] hover:shadow-[0_0_40px_#ff009955] transition-shadow duration-300"
+          className="return-btn"
         >
           Return to Home
         </motion.button>
