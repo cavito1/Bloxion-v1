@@ -6,230 +6,180 @@ import { loginState, workspacestate } from "@/state"
 import Workspace from "@/layouts/workspace"
 import Sessions from "@/components/home/sessions"
 import Docs from "@/components/home/docs"
-import randomText from "@/utils/randomText"
 import wall from "@/components/home/wall"
 import StickyNoteAnnouncement from "@/components/sticky-note-announcement"
 import Birthdays from "@/components/birthdays"
 import NewToTeam from "@/components/newmembers"
+import randomText from "@/utils/randomText"
 import { useRecoilState } from "recoil"
 import { useMemo, useEffect, useState } from "react"
-import {
-  IconHome,
-  IconWall,
-  IconFileText,
-  IconSpeakerphone,
-  IconChevronRight,
-  IconSettings,
-  IconPlus,
-  IconRefresh,
-  IconArrowRight,
-  IconGift,
-} from "@tabler/icons-react"
 import clsx from "clsx"
 
-interface WidgetConfig {
-  component: React.FC
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-  color: string
-}
-
 const Home: pageWithLayout = () => {
-  const [login, setLogin] = useRecoilState(loginState)
-  const [workspace, setWorkspace] = useRecoilState(workspacestate)
+  const [login] = useRecoilState(loginState)
+  const [workspace] = useRecoilState(workspacestate)
   const text = useMemo(() => randomText(login.displayname), [login.displayname])
-  const [isLoadingTitle, setIsLoadingTitle] = useState(false)
-  const [refreshing, setRefreshing] = useState(false)
-  const [titleVisible, setTitleVisible] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const widgets: Record<string, WidgetConfig> = {
-    wall: {
-      component: wall,
-      icon: IconWall,
-      title: "Wall",
-      description: "Latest messages and announcements",
-      color: "bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20",
-    },
-    sessions: {
-      component: Sessions,
-      icon: IconSpeakerphone,
-      title: "Sessions",
-      description: "Ongoing and upcoming sessions",
-      color: "bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20",
-    },
-    documents: {
-      component: Docs,
-      icon: IconFileText,
-      title: "Documents",
-      description: "Latest workspace documents",
-      color: "bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20",
-    },
-  }
-
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsLoadingTitle(document.title.includes("Loading"))
-    }
-
-    const timer = setTimeout(() => {
-      setTitleVisible(true)
-    }, 300)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    if (
-      workspace &&
-      workspace.groupId &&
-      workspace.settings &&
-      Array.isArray(workspace.settings.widgets)
-    ) {
+    if (workspace && workspace.settings && Array.isArray(workspace.settings.widgets)) {
       setLoading(false)
     }
   }, [workspace])
 
-  const handleRefresh = () => {
-    setRefreshing(true)
-    setTimeout(() => {
-      setRefreshing(false)
-    }, 1000)
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center text-zinc-500">
+        Loading your workspace...
+      </div>
+    )
   }
 
   return (
-    <div className="pagePadding">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <div className="relative">
-            <div className="absolute -left-3 -top-3 w-20 h-20 bg-primary/5 rounded-full blur-2xl"></div>
-            <div className="relative">
-              <div
-                className={clsx(
-                  "transition-all duration-700 transform",
-                  titleVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
-                )}
-              >
-                <span className="text-xs font-medium text-primary uppercase tracking-wider mb-1 block">
-                  Welcome back
-                </span>
-                <h1 className="text-4xl font-extrabold text-zinc-900 dark:text-white mb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
-                  {text}
-                </h1>
-                <div
-                  className={clsx(
-                    "h-1 w-16 bg-gradient-to-r from-primary to-primary/30 rounded-full mb-3 transition-all duration-1000 transform",
-                    titleVisible ? "scale-x-100 opacity-100" : "scale-x-0 opacity-0",
-                  )}
-                ></div>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md">
-                  Here's what's happening in your workspace today
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
+    <div className="relative min-h-screen text-zinc-900 dark:text-white antialiased overflow-x-hidden selection:bg-blue-500/40">
+      {/* Ambient glows */}
+      <div className="absolute top-[-10rem] left-[-5rem] w-[30rem] h-[30rem] bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-[-8rem] right-[-6rem] w-[24rem] h-[24rem] bg-gradient-to-br from-pink-500/20 via-amber-400/20 to-blue-400/20 rounded-full blur-3xl"></div>
+
+      <main className="relative max-w-[90rem] mx-auto px-6 py-20 space-y-20 animate-fadeUp">
+        {/* Hero */}
+        <section className="flex flex-col items-center text-center relative z-10">
+          <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400 bg-clip-text text-transparent mb-4">
+            Your Glass Workspace
+          </h1>
+          <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl">
+            A clean, immersive dashboard designed to keep your team in focus.
+          </p>
+          <div className="mt-8 flex gap-4">
             <button
-              onClick={handleRefresh}
-              className="p-2 rounded-full bg-white dark:bg-zinc-800 shadow-sm hover:shadow transition-all duration-200 text-zinc-500 dark:text-zinc-300 hover:text-primary dark:hover:text-primary"
-              aria-label="Refresh dashboard"
+              className="px-6 py-2.5 rounded-full bg-blue-600 text-white text-sm font-medium shadow hover:bg-blue-700 transition"
+              onClick={() => window.location.reload()}
             >
-              <IconRefresh className={clsx("w-5 h-5", refreshing && "animate-spin")} />
+              Refresh Data
             </button>
-           
-          </div>
-        </div>
-        <div className="mb-8 z-0 relative">
-          <Birthdays />
-        </div>
-        <div className="mb-8 z-0 relative">
-          <NewToTeam />
-        </div>
-        <div className="mb-8 z-0 relative">
-          <StickyNoteAnnouncement />
-        </div>
-
-        {loading ? (
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm p-12 text-center border border-zinc-100 dark:border-zinc-700">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/10 to-primary/30 flex items-center justify-center">
-              <IconHome className="w-12 h-12 text-primary" />
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-zinc-900 dark:text-white">
-                Hold on... your workspace is still loading or we're pushing an update 😋
-              </h3>
-              <div className="flex justify-center">
-                <div className="animate-pulse flex space-x-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : workspace.settings.widgets.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {workspace.settings.widgets.map((widget, index) => {
-              const widgetConfig = widgets[widget]
-              if (!widgetConfig) return null
-              const Widget = widgetConfig.component
-              const Icon = widgetConfig.icon
-              return (
-                <div
-                  key={widget}
-                  className={clsx(
-                    "bg-white dark:bg-zinc-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-zinc-100 dark:border-zinc-700",
-                    "transform hover:-translate-y-1",
-                  )}
-                >
-                  <div className={`px-6 py-5 ${widgetConfig.color} border-b border-zinc-100 dark:border-zinc-700`}>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm flex items-center justify-center shadow-sm">
-                        <Icon className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-bold text-zinc-900 dark:text-white">{widgetConfig.title}</h2>
-                        <p className="text-sm text-zinc-600 dark:text-zinc-300">{widgetConfig.description}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-6">
-                    <Widget />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        ) : (
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm p-12 text-center border border-zinc-100 dark:border-zinc-700">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary/10 to-primary/30 flex items-center justify-center">
-              <IconHome className="w-12 h-12 text-primary" />
-            </div>
-            <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-3 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
-              Your dashboard is empty
-            </h3>
-            <p className="text-zinc-500 dark:text-zinc-400 mb-8 max-w-md mx-auto">
-              Add widgets to your workspace to see important information at a glance
-            </p>
             <button
               onClick={() => (window.location.href = `/workspace/${workspace.groupId}/settings`)}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow group"
+              className="px-6 py-2.5 rounded-full bg-white/70 dark:bg-zinc-800/60 text-zinc-800 dark:text-white text-sm font-medium border border-white/20 hover:shadow-lg transition"
             >
-              <IconPlus className="w-5 h-5" />
-              <span>Configure Dashboard</span>
-              <IconChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+              Configure
             </button>
           </div>
-        )}
+        </section>
 
-      </div>
+        {/* Main grid */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start relative z-20">
+          {/* Left Column */}
+          <div className="lg:col-span-3 flex flex-col gap-10 translate-y-4">
+            <div className="glass rounded-3xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-2xl bg-purple-200/60 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-2v13" />
+                  </svg>
+                </div>
+                <h2 className="text-lg font-semibold">Sessions</h2>
+              </div>
+              <Sessions />
+            </div>
+
+            <div className="glass rounded-3xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-2xl bg-amber-200/60 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 20h9" />
+                  </svg>
+                </div>
+                <h2 className="text-lg font-semibold">Documents</h2>
+              </div>
+              <Docs />
+            </div>
+          </div>
+
+          {/* Center Focus (Wall) */}
+          <div className="lg:col-span-6 relative">
+            <div className="absolute -top-10 -left-10 w-[15rem] h-[15rem] bg-blue-400/20 rounded-full blur-3xl"></div>
+            <div className="glass rounded-[2rem] p-10 relative">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-blue-200/60 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5h18M9 3v2m6-2v2M4 7h16v13H4z" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold">Wall</h2>
+              </div>
+              <wall />
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="lg:col-span-3 flex flex-col gap-10 -translate-y-4">
+            <div className="glass rounded-3xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-2xl bg-blue-200/60 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                  🎂
+                </div>
+                <h2 className="text-lg font-semibold">Birthdays</h2>
+              </div>
+              <Birthdays />
+            </div>
+
+            <div className="glass rounded-3xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-2xl bg-pink-200/60 dark:bg-pink-900/30 flex items-center justify-center text-pink-600 dark:text-pink-400">
+                  👋
+                </div>
+                <h2 className="text-lg font-semibold">New to the Team</h2>
+              </div>
+              <NewToTeam />
+            </div>
+          </div>
+        </section>
+
+        {/* Announcement */}
+        <section className="glass rounded-[2rem] p-10 relative overflow-hidden mt-10 text-center">
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/10 via-transparent to-transparent"></div>
+          <div className="relative">
+            <h3 className="text-xl font-bold mb-2 text-yellow-700 dark:text-yellow-300 flex justify-center items-center gap-2">
+              <span className="text-2xl">📢</span> Announcement
+            </h3>
+            <StickyNoteAnnouncement />
+          </div>
+        </section>
+      </main>
+
+      <style jsx global>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-fadeUp { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .glass {
+          backdrop-filter: blur(28px) saturate(180%);
+          -webkit-backdrop-filter: blur(28px) saturate(180%);
+          background: rgba(255, 255, 255, 0.65);
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.08),
+            inset 0 0 0.5px rgba(255, 255, 255, 0.4);
+          transition: all 0.4s ease;
+        }
+        .dark .glass {
+          background: rgba(20, 20, 20, 0.5);
+          border-color: rgba(255, 255, 255, 0.08);
+          box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.4),
+            inset 0 0 0.5px rgba(255, 255, 255, 0.1);
+        }
+        .glass:hover {
+          transform: translateY(-4px);
+          box-shadow:
+            0 16px 48px rgba(0, 0, 0, 0.12),
+            inset 0 0 0.5px rgba(255, 255, 255, 0.5);
+        }
+      `}</style>
     </div>
   )
 }
 
-
 Home.layout = Workspace
-
 export default Home
